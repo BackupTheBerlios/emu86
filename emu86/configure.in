@@ -1,0 +1,50 @@
+AC_INIT
+AM_INIT_AUTOMAKE(emu86, 0.0.0)
+AM_CONFIG_HEADER(config.h)
+AC_DEFINE(_GNU_SOURCE,,[use gnu extensions])
+AC_PREREQ(2.50)
+
+AM_MAINTAINER_MODE
+
+AC_PROG_CC
+AC_PROG_INSTALL
+
+AC_PROG_RANLIB
+
+AC_HEADER_STDC
+AC_PROG_INSTALL
+
+AC_HEADER_STDC
+LIBS="-lcurses "
+AC_ARG_ENABLE(dmalloc,[  --enable-dmalloc        enable compiling using dmalloc],,[enable_dmalloc=no])
+
+if test x$enable_dmalloc = xyes; then
+	DMALLOC_OPTIONS="log=0"
+	AC_HAVE_LIBRARY(dmalloc,[
+		LIBS="$LIBS -ldmalloc"
+		AC_DEFINE(DMALLOC,,[use dmalloc])],
+		[AC_MSG_ERROR([dmalloc library not found])],)
+else
+	AC_DEFINE(DMALLOC_DISABLE,,[do not use dmalloc])
+fi
+					
+CFLAGS=`echo $CFLAGS -Wall|sed 's/^\ *//g;s/\ *$//g'`
+
+AC_CONFIG_FILES([
+Makefile
+src/Makefile
+src/cpu/Makefile
+src/mem/Makefile
+src/hardware/Makefile
+])
+AC_OUTPUT
+
+echo
+echo $PACKAGE $VERSION
+echo
+echo Use dmalloc.............: $enable_dmalloc
+echo
+echo $PACKAGE will be installed in $prefix/bin
+echo
+echo configure complete, now type \'make\'
+echo
