@@ -13,6 +13,7 @@
  */                    
 
 #include "cpu.h"
+
 #include "cpu_exec.h"
 #include "cpu_regs.h"
 #include "cpu_flags.h"
@@ -47,36 +48,11 @@ inline void cpu_exec_in()
 {
 	bit8u opcode;
 	
-	Segreg tmpsr;
-	
 	bit8u  tmp8u;
 	bit8u *tmp8u_ptr;
 	bit16u tmp16u;
-	
-//	if (verbose)
-//		cpu_short_dump();
-/*
-	if ((ip.ptr - sreg_cs.ptr) > 0xFFFF)
-	{
-		shutdown();
-	}
 
-	if ((ip.ptr - sreg_cs.ptr) == 0xECB7)
-		verbose = 1;
-
-	if ((ip.ptr - sreg_cs.ptr) == 0xECF4)
-		verbose = 0;
-
-	if ((ip.ptr - sreg_cs.ptr) == 0xED06)
-		verbose = 0;*/
-
-/*	if  ( ((ip.ptr - sreg_cs.ptr) > 0xE394) &&
-	       ((ip.ptr - sreg_cs.ptr) < 0xE3DA) )
-	{
-		verbose = 1;
-	} else verbose = 0; */
-	
-//	if ((ip.ptr - sreg_cs.ptr) == 0xE3DA) shutdown(); */
+//	cpu_short_dump();
 	
 	switch (opcode = fetchb())
 	{
@@ -464,7 +440,6 @@ inline void cpu_exec_in()
 		reg_si += -2*flags.DF+1;
 		break;
 	case 0xAE: /* (AE SCASB) - Compare bytes AL-ES:[DI], update (E)DI */
-		DEBUG("cmp: %02x %02x\n", reg_al, *(sreg_es.ptr + reg_di)); 
 		cpu_cmp8(reg_al, *(sreg_es.ptr + reg_di));
 		reg_di += -2*flags.DF+1;
 		break;
@@ -521,7 +496,6 @@ inline void cpu_exec_in()
 		break;
 	case 0xC3: /* (C3) RET */
 		cpu_pop16(&tmp16u);
-//		DEBUG("ret to %04x:%04x\n", segreg[segreg_cs].val, tmp16u);
 		ip.ptr = sreg_cs.ptr + tmp16u;
 		break; 
 	case 0xC6: /* (C6) MOV r/m8,imm8 - Move immediate byte to r/m byte */
@@ -614,7 +588,6 @@ inline void cpu_exec_in()
 		reg_al = *(sreg_ds.ptr + reg_bx + (bit16u)reg_al);
 		break;
 	case 0xE2: /* (E2 cb) LOOP rel8 - DEC count; jump short if count <> 0 */
-//		if (*ptr_ip == 0xFE) {DEBUG("waiting...\n"); reg_cx = 0; ptr_ip++; break; }
 		reg_cx--;
 		if (reg_cx > 0)
 			cpu_djmp8(fetchb());
@@ -631,11 +604,6 @@ inline void cpu_exec_in()
 		port_out(fetchb(), reg_al);
 		break;
 	case 0xE8: /* (E8 cw) CALL rel16 - Call near, displacement relative to next instruction */
-
-/*		DEBUG("call to %04x:%04x\n", sreg_cs.val, 
-		      ((ip.ptr - sreg_cs.ptr + (*(bit16u *)ip.ptr + 
-		       2) ) & 0xFFFF)); */
-		
 		tmp16u = (ip.ptr - sreg_cs.ptr) + 2;
 		cpu_push16(tmp16u);
 		ip.ptr = sreg_cs.ptr + ((ip.ptr - sreg_cs.ptr + (*(bit16u *)ip.ptr + 2) ) & 0xFFFF);
@@ -700,11 +668,9 @@ inline void cpu_exec_in()
 		flags.CF = 1;
 		break;
 	case 0xFA:
-//		DEBUG("---- IF = 0\n");
 		flags.IF = 0;
 		break;
 	case 0xFB: /* (FB) STI - Set interrupt flag; interrupts enabled at the end of the next instruction */
-//		DEBUG("++++ IF = 1\n");
 		flags.IF = 1;
 		break;
 	case 0xFC: /* (FC) CLD - Clear direction flag */
@@ -714,7 +680,7 @@ inline void cpu_exec_in()
 		flags.DF = 1;
 		break;
 	case 0xF4: /* (F4) HLT - Halt */
-		DEBUG("Processor halted\n");
+		EMU_DEBUG("Processor halted\n");
 		cpu_dump();
 		goto end;
 		break;
@@ -767,7 +733,7 @@ inline void cpu_exec_in()
 	return;
 NI:
 	ip.ptr--;
-	DEBUG("OPCODE NOT IMPLEMENTED:\n");
+	EMU_ERROR("OPCODE NOT IMPLEMENTED:\n");
 	cpu_dump();
 end:
 	shutdown();

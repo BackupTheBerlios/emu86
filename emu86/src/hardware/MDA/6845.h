@@ -12,4 +12,20 @@
  * General Public License for more details.
  */
 
+#ifndef __6845_H
+#define __6845_H
+
+#ifndef LOG_CHAN
+# define LOG_CHAN ""
+#endif /* LOG_CHAN */
+
+#include "emu86.h"
 #include "common.h"
+
+void mda_read_status(bit8u *data);
+void mda_select_reg(bit8u data);
+void mda_write_reg(bit8u data);
+void mda_textmode_out();
+
+#endif /* __6845_H */
+

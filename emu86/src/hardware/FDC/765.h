@@ -15,8 +15,13 @@
 #ifndef __765_H
 #define __765_H
 
+#ifndef LOG_CHAN
+# define LOG_CHAN "FDC"
+#endif /* LOG_CHAN */
+
+#include "emu86.h"
 #include "common.h"
-#include "timer.h"
+#include "timer.h" 
 
 void fdc_timer_handler();
 

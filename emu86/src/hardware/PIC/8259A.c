@@ -51,7 +51,7 @@ void pic_write(bit8u port, bit8u data)
 		case 0x01:
 			pic.next_icw++;
 			if (port != 0x20)
-				DEBUG("[PIC] wrote icw1 on port 0x21\n"); 
+				EMU_DEBUG("wrote icw1 on port 0x21"); 
 			else
 				pic.p20 = data;
 				
@@ -60,23 +60,23 @@ void pic_write(bit8u port, bit8u data)
 			pic.bit4u_iv        = (data >> 2) & 0x01;
 			pic.level_triggered = (data >> 3) & 0x01;
 
-			DEBUG("[PIC] icw4 needed: %d single 8259: %d 4bit iv: %d level triggered: %d\n",
+			EMU_DEBUG("icw4 needed: %d single 8259: %d 4bit iv: %d level triggered: %d",
 			       pic.icw4_needed, pic.single_8259,pic.bit4u_iv, pic.level_triggered);
 					      
 			break;
 		case 0x02:
 			pic.next_icw++;
 			if (port != 0x21)
-				DEBUG("[PIC] wrote icw2 on port 0x20\n");
+				EMU_DEBUG("wrote icw2 on port 0x20");
 			else
 				pic.p21 = data;
 
 			pic.int_offset = data & 0xf0;
-			DEBUG("[PIC] offset set to %02x\n", pic.int_offset);
+			EMU_DEBUG("offset set to %02x", pic.int_offset);
 			break;
 		case 0x03:
 			if (port != 0x21)
-				DEBUG("[PIC] wrote icw3 on port 0x20\n");
+				EMU_DEBUG("wrote icw3 on port 0x20");
 			else
 				pic.p21 = data;
 			pic.next_icw++;
@@ -87,7 +87,7 @@ void pic_write(bit8u port, bit8u data)
 		case 0x04:
 			/* blar */
 			if (port != 0x21)
-				DEBUG("[PIC] wrote icw3 on port 0x20\n");
+				EMU_DEBUG("wrote icw3 on port 0x20");
 			else
 				pic.p21 = data;
 			pic.next_icw++;
@@ -101,8 +101,8 @@ void pic_write(bit8u port, bit8u data)
 				data >>= 1;
 			}
 
-			DEBUG("[PIC] wrote IMR1, irqs: %c%c%c%c%c%c%c%c"
-			      " (o - off, S - serviced)\n",
+			EMU_DEBUG("wrote IMR1, irqs: %c%c%c%c%c%c%c%c"
+			      " (o - off, S - serviced)",
 			      pic.irq[0] ? 'o' : 'S',
 			      pic.irq[1] ? 'o' : 'S',
 			      pic.irq[2] ? 'o' : 'S',
@@ -122,12 +122,12 @@ void pic_read(bit8u port, bit8u *dest)
 		*dest = pic.p20;
 	else
 		*dest = pic.p21;
-	DEBUG("[PIC] read %02x from port %02x (PIC)\n",*dest,port);
+	EMU_DEBUG("read %02x from port %02x (PIC)",*dest,port);
 }
 
 void pic_interrupt(bit8u interrupt)
 {
 	interrupt += 0x08;
-	DEBUG("[PIC] IRQ %d\n", interrupt);
+	EMU_DEBUG("IRQ %d", interrupt);
 	cpu_int(interrupt);
 }

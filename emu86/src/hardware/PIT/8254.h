@@ -12,8 +12,23 @@
  * General Public License for more details.
  */
 
+#ifndef __8254_H
+#define __8254_H
+
+#ifndef LOG_CHAN
+# define LOG_CHAN "PIT"
+#endif /* LOG_CHAN */
+
+#include "emu86.h"
 #include "common.h"
 
-static void reprogram_counter(bit8u t, bit16u val);
-static void start(bit8u t);
+void pit_write_cw(bit8u val);
+void pit_write_timer(bit8u t, bit8u data);
+void pit_read_latch(bit8u t, bit8u *data);
+void reprogram_counter(bit8u t, bit16u val);
+void start(bit8u t);
+void pit_read_count(bit8u t, bit8u *data);
+void pit_init();
+void pit_tick();
 
+#endif /* __8254_H */

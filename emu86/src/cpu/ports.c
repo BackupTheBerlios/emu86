@@ -1,7 +1,11 @@
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "cpu.h"
+
+#include "hardware/DMA/8237.h"
+#include "hardware/FDC/765.h"
+#include "hardware/MDA/6845.h"
+#include "hardware/PIC/8259A.h"
+#include "hardware/PIT/8254.h"
+#include "hardware/PPI/8255A.h"
 
 void port_out(bit16u port, bit8u data)
 {
@@ -79,7 +83,7 @@ void port_out(bit16u port, bit8u data)
 		case 0x3B5: mda_write_reg(data); break;
 
 		default:
-			DEBUG("sent %02x to unmapped port %03x\n",data,port);
+			EMU_DEBUG("sent %02x to unmapped port %03x", data, port);
 			break;
 	}
 }
@@ -111,7 +115,7 @@ void port_in(bit16u port, bit8u *data)
 		case 0x3BA: mda_read_status(data); break;
 		
 		default:
-			DEBUG("tried to read from unmapped port %03x\n",port);
+			EMU_DEBUG("tried to read from unmapped port %03x", port);
 			*data = 0;
 			break;
 	}

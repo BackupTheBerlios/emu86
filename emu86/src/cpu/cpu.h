@@ -15,8 +15,12 @@
 #ifndef __CPU_H
 #define __CPU_H
 
-#include "common.h"
+#ifndef LOG_CHAN
+# define LOG_CHAN "CPU"
+#endif /* LOG_CHAN */
 
+#include "emu86.h"
+#include "common.h"
 #include "../mem/mem.h"
 
 void cpu_init();

@@ -76,23 +76,23 @@ void dma_write_offset(bit8u c, bit8u offset)
 		dma_channel[c].offset_lsb = 0;
 		dma_channel[c].offset = (dma_channel[c].offset & 0xFF00) | 
 		                        offset;
-		DEBUG("[DMA] wrote lsb %02x offset for channel %x (%04x)\n", 
-		      offset, c, dma_channel[c].offset);
+		EMU_DEBUG("wrote lsb %02x offset for channel %x (%04x)", 
+		          offset, c, dma_channel[c].offset);
 	}
 	else
 	{
 		dma_channel[c].offset_lsb = 1;
 		dma_channel[c].offset = (dma_channel[c].offset & 0x00FF) | 
 		                        (offset << 8);
-                DEBUG("[DMA] wrote msb %02x offset for channel %x (%04x)\n", 
-		      offset, c, dma_channel[c].offset);
+                EMU_DEBUG("wrote msb %02x offset for channel %x (%04x)", 
+		          offset, c, dma_channel[c].offset);
 	}
 }
 
 void dma_read_offset(bit8u c, bit8u *dest)
 {
 	*dest = dma_channel[c].offset;
-	DEBUG("[DMA] offset of channel %x (%x) read\n", c, *dest);
+	EMU_DEBUG("offset of channel %x (%x) read", c, *dest);
 }
 
 void dma_write_wordcount(bit8u c, bit8u wordcount)
@@ -103,7 +103,7 @@ void dma_write_wordcount(bit8u c, bit8u wordcount)
                 dma_channel[c].wordcount_lsb = 0;
                 dma_channel[c].wordcount = (dma_channel[c].wordcount & 0xFF00) |
                                            wordcount;
-                DEBUG("[DMA] wrote lsb %02x wordcount for channel %x (%04x)\n",
+                EMU_DEBUG("wrote lsb %02x wordcount for channel %x (%04x)",
                       wordcount, c, dma_channel[c].wordcount);
         }
         else
@@ -111,15 +111,15 @@ void dma_write_wordcount(bit8u c, bit8u wordcount)
                 dma_channel[c].wordcount_lsb = 1;
                 dma_channel[c].wordcount = (dma_channel[c].wordcount & 0x00FF) |
                                            (wordcount << 8);
-                DEBUG("[DMA] wrote msb %02x wordcount for channel %x (%04x)\n",
-                      wordcount, c, dma_channel[c].wordcount);
+                EMU_DEBUG("wrote msb %02x wordcount for channel %x (%04x)",
+                          wordcount, c, dma_channel[c].wordcount);
         }
 }
 
 void dma_read_wordcount(bit8u c, bit8u *dest)
 {
         *dest = dma_channel[c].wordcount;
-	DEBUG("[DMA] wordcount of channel %x (%x) read\n", c, *dest);
+	EMU_DEBUG("wordcount of channel %x (%x) read", c, *dest);
 }
 
 void dma_write_command_reg(bit8u val)
@@ -133,15 +133,15 @@ void dma_write_command_reg(bit8u val)
 	dma_controller.drq_sensing_active_high  = val & 0x40;
 	dma_controller.back_sensing_active_high = val & 0x80;
 	
-	DEBUG("[DMA] wrote command register: (%02x)\n"
-	      "  memory-to-memory DMA:        %s\n"
-	      "  Ch0 address hold:            %s\n"
-	      "  controller disabled:         %s\n"
-	      "  compressed timing mode:      %s\n"
-	      "  rotating priority:           %s\n"
-	      "  extended write mode:         %s\n"
-	      "  DRQ sensing as active high:  %s\n"
-	      "  BACK sensing as active high: %s\n",
+	EMU_DEBUG("wrote command register: (%02x)\n"
+	          "    memory-to-memory DMA:        %s\n"
+	          "    Ch0 address hold:            %s\n"
+	          "    controller disabled:         %s\n"
+	          "    compressed timing mode:      %s\n"
+	          "    rotating priority:           %s\n"
+	          "    extended write mode:         %s\n"
+	          "    DRQ sensing as active high:  %s\n"
+	          "    BACK sensing as active high: %s",
 	      val,
 	      dma_controller.mem2mem_dma ? "enabled" : "disabled",
 	      dma_controller.ch0_addr_hold ? "enabled" : "disabled",
@@ -156,12 +156,12 @@ void dma_write_command_reg(bit8u val)
 void dma_read_status_reg(bit8u *dest)
 {
 	*dest = dma_controller.status_reg;
-	DEBUG("[DMA] read status (%02x)\n", *dest);
+	EMU_DEBUG("read status (%02x)", *dest);
 }
 
 void dma_write_req_reg(bit8u val)
 {
-	DEBUG("[DMA] wrote request register (%02x)\n", val);
+	EMU_DEBUG("wrote request register (%02x)", val);
 }
 
 void dma_write_mask_reg(bit8u val)
@@ -172,7 +172,7 @@ void dma_write_mask_reg(bit8u val)
 
 	dma_channel[c].masked = val & 0x04;
 	
-	DEBUG("[DMA] channel %x %s\n", c,
+	EMU_DEBUG("channel %x %s", c,
 	      dma_channel[c].masked ? "masked" : "unmasked");
 }
 
@@ -187,12 +187,12 @@ void dma_write_mode_reg(bit8u val)
 	dma_channel[c].addr_inc = val & 0x20;
 	dma_channel[c].mode = (val >> 6) & 0x03;
 
-	DEBUG("[DMA] wrote mode register (%02x)\n"
-	      "  channel: %d\n"
-	      "  xfer type: %s\n"
-	      "  auto initialization: %s\n"
-	      "  address %s\n"
-	      "  mode: %s\n", 
+	EMU_DEBUG("wrote mode register (%02x)\n"
+	      "    channel: %d\n"
+	      "    xfer type: %s\n"
+	      "    auto initialization: %s\n"
+	      "    address %s\n"
+	      "    mode: %s", 
 	      val, c,
 
 	      dma_channel[c].xfer_type == 0 ? "verify" :
@@ -208,20 +208,20 @@ void dma_write_mode_reg(bit8u val)
 	
 void dma_clear_flipflop()
 {
-	DEBUG("[DMA] flipflop cleared\n");
+	EMU_DEBUG("flipflop cleared");
 }
 
 void dma_clear_cr()
 {
-	DEBUG("[DMA] control register cleared\n");
+	EMU_DEBUG("control register cleared");
 }
 
 void dma_clear_mr()
 {
-	DEBUG("[DMA] mask register cleared\n");
+	EMU_DEBUG("mask register cleared");
 }
 
 void dma_master_clear(bit8u val)
 {
-	DEBUG("[DMA] master clear (%02x)\n", val);
+	EMU_DEBUG("master clear (%02x)", val);
 }

@@ -15,6 +15,7 @@
 #include "cpu.h"
 #include "cpu_flags.h"
 #include "cpu_regs.h"
+#include "cpu_iflow.h"
 
 inline void cpu_add8(bit8u *dest, bit8u src)
 {

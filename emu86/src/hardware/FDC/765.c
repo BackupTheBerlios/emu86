@@ -29,17 +29,17 @@ void fdc_init()
 void fdc_write_dor(bit8u val)
 {
 	fdc.DOR = val;
-	DEBUG("[FDC] wrote DOR (%02x)\n", val);
+	EMU_DEBUG("wrote DOR (%02x)", val);
 }
 
 void fdc_read_dor(bit8u *val)
 {
 	*val = fdc.DOR;
-	DEBUG("[FDC] read DOR (%02x)\n", *val);
+	EMU_DEBUG("read DOR (%02x)", *val);
 }
 
 void fdc_timer_handler()
 {
-	DEBUG("[FDC] timer handler..\n");
+//	EMU_DEBUG("timer handler..");
 	timer_reset(TIMER_FDC);
 }

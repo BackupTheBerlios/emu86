@@ -54,19 +54,19 @@ void ppi_init()
 void ppi_write_port_a(bit8u val)
 {
 	ppi.port_a = val;
-	DEBUG("[PPI] wrote port a (%02x)\n", val);
+	EMU_DEBUG("wrote port a (%02x)", val);
 }
 
 void ppi_read_port_a(bit8u *val)
 {
 	*val = ppi.port_a;
-	DEBUG("[PPI] read port a (%02x)\n", *val);
+	EMU_DEBUG("read port a (%02x)", *val);
 }
 
 void ppi_write_port_b(bit8u val)
 {
 	ppi.read_high_switches = val & 0x8;
-	DEBUG("[PPI] wrote port b (%02x)\n", val);
+	EMU_DEBUG("wrote port b (%02x)", val);
 }
 
 void ppi_read_port_c(bit8u *dest)
@@ -77,7 +77,7 @@ void ppi_read_port_c(bit8u *dest)
 	else
 		res |= ((DIP_SWITCHES & 0xf0) >> 4);
 	*dest = res;
-	DEBUG("DIP is: %02x\n",DIP_SWITCHES);
-	DEBUG("read_high_switches: %d\n", ppi.read_high_switches);
-	DEBUG("[PPI] read port c (%02x)\n", *dest);
+	EMU_DEBUG("DIP is: %02x",DIP_SWITCHES);
+	EMU_DEBUG("read_high_switches: %d", ppi.read_high_switches);
+	EMU_DEBUG("read port c (%02x)", *dest);
 }

@@ -18,6 +18,7 @@
 #include <curses.h>
 #include <errno.h>
 
+#include "emu86.h"
 #include "common.h"
 
 #include "cpu/cpu.h"
@@ -27,28 +28,27 @@
 #include "hardware/PPI/8255A.h"
 #include "hardware/FDC/765.h"
 
-void load_rom(char *filename, int offset, int size, char *md5)
+int load_rom(char *filename, int offset, int size, char *md5)
 {
 	FILE	*f;
 	size_t 	 n;
-	
+
+	EMU_DEBUG("Loading rom %s (%d bytes) into 0x%.5x", filename, size, offset);
+
 	f = fopen(filename,"r");
 	
 	if (!f)
 	{
-		fprintf(stderr, "[load_rom] fopen(\"%s\", ...) failed: %s\n", filename,
-			strerror(errno));
-		exit(1);
+		EMU_FATAL(("fopen(%s, \"r\") failed: %s", filename, strerror(errno)));
 	}
 	
 	/* TODO: check md5 hash */
 	
-	n = fread(mem + offset, 1, size, f);
+	n = fread(MEMBASE + offset, 1, size, f);
 
 	if (n != size)
 	{
-		fprintf(stderr, "[load_rom] couldn't read %d bytes\n", size);
-		exit(1);
+		EMU_FATAL("couldn't read %d bytes from \"%s\"", size, filename);
 	}
 	
 	fclose(f);
@@ -97,6 +97,10 @@ void mainloop()
 
 int main()
 {
+	log_init(1, "emu86.log");
+
+        mem_init();
+
 /*	load_rom("../rom/wdbios.rom", 0xc8000, 8192, "a39b2b1c3e298b3599995c353d16c3ad");*/
 	load_rom("../rom/basicc11.f6", 0xf6000, 8192, "69e2bd1d08c893cbf841607c8749d5bd");
 	load_rom("../rom/basicc11.f8", 0xf8000, 8192, "5f85ff5ea352c1ec11b084043fbb549e");
@@ -109,9 +113,7 @@ int main()
         pic_init();
         dma_init();
         ppi_init();
-        mem_init();
         fdc_init();
-
 
         initscr();
         cbreak();

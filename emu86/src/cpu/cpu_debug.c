@@ -12,37 +12,15 @@
  * General Public License for more details.                                     
  */                
 
-#include "cpu_debug.h"
-
 #include "cpu.h"
+#include "cpu_debug.h"
 #include "cpu_regs.h"
 #include "cpu_flags.h"
 #include "cpu_ip.h"
 
-#include <stdio.h>
-#include <stdarg.h>
-
-void DEBUG(char *fmt, ...)
-{
-	va_list args;
-	
-	char buf[32000];
-
-	sprintf(buf, "[%04x:%04x] ",
-		sreg_cs.val, 
-	        (ip.ptr - sreg_cs.ptr));
-	
-	va_start (args, fmt);
-	vsprintf (buf+12, fmt, args);
-	va_end (args);
-
-	fprintf(stderr, buf);
-
-}
-
 void cpu_dump()
 {
-	DEBUG("Status:\n"
+	EMU_DEBUG("Status:\n"
 	      "  Instruction Opcode: 0x%02x  flags: %c%c%c%c%c%c%c%c%c\n"
 	      "    AX = %04x  BX = %04x  CX = %04x  DX = %04x\n"
 	      "    ES = %04x  SS = %04x  DS = %04x  CS = %04x\n"
@@ -70,15 +48,15 @@ void cpu_dump()
 
 void cpu_short_dump()
 {
-	DEBUG("\x1B[31mAX:\x1B[0m%04x"
-	      "\x1B[31mBX:\x1B[0m%04x"
-	      "\x1B[31mCX:\x1B[0m%04x"
-	      "\x1B[31mDX:\x1B[0m%04x"
-	      "\x1B[31mES:\x1B[0m%04x"
-	      "\x1B[31mSS:\x1B[0m%04x"
-	      "\x1B[31mDS:\x1B[0m%04x"
-	      "\x1B[31mSI:\x1B[0m%04x"
-	      " %c%c%c%c%c%c%c%c%c\n",
+	EMU_DEBUG("\x1B[31mAX:\x1B[0m%04x"
+	      " \x1B[31mBX:\x1B[0m%04x"
+	      " \x1B[31mCX:\x1B[0m%04x"
+	      " \x1B[31mDX:\x1B[0m%04x"
+	      " \x1B[31mES:\x1B[0m%04x"
+	      " \x1B[31mSS:\x1B[0m%04x"
+	      " \x1B[31mDS:\x1B[0m%04x"
+	      " \x1B[31mSI:\x1B[0m%04x"
+	      " %c%c%c%c%c%c%c%c%c",
 	      reg_ax, reg_bx, reg_cx, reg_dx,
 	      sreg_es.val,
 	      sreg_ss.val,

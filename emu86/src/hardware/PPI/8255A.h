@@ -12,4 +12,20 @@
  * General Public License for more details.
  */
 
+#ifndef __8255A_H
+#define __8255A_H
+
+#ifndef LOG_CHAN
+# define LOG_CHAN "PPI"
+#endif /* LOG_CHAN */
+
+#include "emu86.h"
 #include "common.h"
+
+void ppi_init();
+void ppi_write_port_a(bit8u val);
+void ppi_read_port_a(bit8u *val);
+void ppi_write_port_b(bit8u val);
+void ppi_read_port_c(bit8u *dest);
+
+#endif /* __8255A_H */

@@ -12,9 +12,6 @@
  * General Public License for more details.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "8254.h"
 
 typedef struct _pit_timer {
@@ -59,20 +56,20 @@ void pit_write_cw(bit8u val)
 	pit.timer[t].mode  = (val >> 1) & 7;
 	pit.timer[t].bcd   = val & 1;
 	
-	DEBUG ("[PIT] wrote command word: (%02x) timer: %d mode: %d rwl: %d bcd: %d\n",
+	EMU_DEBUG("wrote command word: (%02x) timer: %d mode: %d rwl: %d bcd: %d",
 		val, t, pit.timer[t].mode, pit.timer[t].rwl, pit.timer[t].bcd); 
 
 	if (pit.timer[t].rwl == RWL_LATCH)
 	{
 		pit.timer[t].latch = pit.timer[t].count;
-		DEBUG ("[PIT] timer %d latched %x\n", t, pit.timer[t].latch);
+		EMU_DEBUG("timer %d latched %x", t, pit.timer[t].latch);
 		pit.timer[t].rwl = i;
 	} 
 }
 
 void pit_write_timer(bit8u t, bit8u data)
 {
-	DEBUG ("[PIT] wrote to timer %d: %02x)\n", t, data);
+	EMU_DEBUG("wrote to timer %d: %02x)", t, data);
 	switch (pit.timer[t].rwl)
 	{
 		case RWL_RW8_LSB:
@@ -89,18 +86,18 @@ void pit_write_timer(bit8u t, bit8u data)
 			reprogram_counter(t, (pit.timer[t].latch & 0xff) | (data << 8));
 			break;
 		default:
-			DEBUG("[PIT] !! tried to write to timer %d with rwl %d\n", t, pit.timer[t].rwl);
+			EMU_WARN("tried to write to timer %d with rwl %d", t, pit.timer[t].rwl);
 			break;
 	}
 }
 
 void pit_read_latch(bit8u t, bit8u *data)
 {
-	DEBUG("[PIT] read from latched timer %d: %02x\n",t,pit.timer[t].latch);
+	EMU_DEBUG("read from latched timer %d: %02x",t,pit.timer[t].latch);
 	*data = pit.timer[t].latch;
 }
 
-static void reprogram_counter(bit8u t, bit16u val)
+void reprogram_counter(bit8u t, bit16u val)
 {
 	pit.timer[t].count_start = val;
 	pit.timer[t].latch = 0;
@@ -124,7 +121,7 @@ static void reprogram_counter(bit8u t, bit16u val)
 			}
 		case 0x03:
 			if (pit.timer[t].count_start == 1)
-				DEBUG("[PIT] reprogram_counter(): illegal count_start (1) in mode 3\n");
+				EMU_DEBUG("reprogram_counter(): illegal count_start (1) in mode 3");
 			pit.timer[t].count_start = pit.timer[t].count_start & 0xfffe;
 			if (pit.timer[t].gate && !pit.timer[t].active) {
 				pit.timer[t].count = pit.timer[t].count_start;
@@ -134,12 +131,12 @@ static void reprogram_counter(bit8u t, bit16u val)
 			}
 			break;
 		default:
-			DEBUG("[PIT] reprogram_counter(): mode %d not implemented\n", pit.timer[t].mode);
+			EMU_DEBUG("reprogram_counter(): mode %d not implemented", pit.timer[t].mode);
 			break;
 	}
 }
 
-static void start(bit8u t)
+void start(bit8u t)
 {
 	
 }

@@ -16,6 +16,7 @@
 
 #include "cpu_ip.h"
 #include "cpu_flags.h"
+#include "cpu_istack.h"
 #include "cpu_regs.h"
 
 /**
@@ -57,7 +58,7 @@ inline void cpu_int(bit8u i)
 	cpu_set_segreg_val(CS, *(bit16u*)(MEMBASE + i * 4 + 2) );
 	ip.ptr = sreg_cs.ptr + offset;
 	
-	DEBUG("int 0x%.2x (%cw) vector: %04x:%04x\n", i, i >= 0x10 ? 's' : 'h',
+	EMU_DEBUG("int 0x%.2x (%cw) vector: %04x:%04x", i, i >= 0x10 ? 's' : 'h',
               sreg_cs.val, ip.ptr - sreg_cs.ptr);
 
 }
