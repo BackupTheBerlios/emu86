@@ -46,6 +46,7 @@ inline void process_timers(int microsecs)
 		if (timer[i].running) {
 			timer[i].count -= microsecs;
 			if (timer[i].count <= 0)
+				timer[i].handler();
 		}
 	}
 }

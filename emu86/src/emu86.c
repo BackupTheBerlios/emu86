@@ -16,6 +16,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <curses.h>
+#include <errno.h>
 
 #include "common.h"
 
@@ -25,6 +26,33 @@
 #include "hardware/PIC/8259A.h"
 #include "hardware/PPI/8255A.h"
 #include "hardware/FDC/765.h"
+
+void load_rom(char *filename, int offset, int size, char *md5)
+{
+	FILE	*f;
+	size_t 	 n;
+	
+	f = fopen(filename,"r");
+	
+	if (!f)
+	{
+		fprintf(stderr, "[load_rom] fopen(\"%s\", ...) failed: %s\n", filename,
+			strerror(errno));
+		exit(1);
+	}
+	
+	/* TODO: check md5 hash */
+	
+	n = fread(mem + offset, 1, size, f);
+
+	if (n != size)
+	{
+		fprintf(stderr, "[load_rom] couldn't read %d bytes\n", size);
+		exit(1);
+	}
+	
+	fclose(f);
+}
 
 void mainloop()
 {
@@ -69,29 +97,29 @@ void mainloop()
 
 int main()
 {
-	FILE *f;
+/*	load_rom("../rom/wdbios.rom", 0xc8000, 8192, "a39b2b1c3e298b3599995c353d16c3ad");*/
+	load_rom("../rom/basicc11.f6", 0xf6000, 8192, "69e2bd1d08c893cbf841607c8749d5bd");
+	load_rom("../rom/basicc11.f8", 0xf8000, 8192, "5f85ff5ea352c1ec11b084043fbb549e");
+	load_rom("../rom/basicc11.fa", 0xfa000, 8192, "04a285d5dc8d86c60679e8f3c779dcc4");
+	load_rom("../rom/basicc11.fc", 0xfc000, 8192, "b086a6980fc5736098269e62b59726ef");
+	load_rom("../rom/pc081682.bin", 0xfe000, 8192, "1584aeaadebba4bc95783f1fa0fa3db8");
 
-	initscr();                                                            
-	cbreak();
+        cpu_init();
+        pit_init();
+        pic_init();
+        dma_init();
+        ppi_init();
+        mem_init();
+        fdc_init();
+
+
+        initscr();
+        cbreak();
         noecho();
-	nodelay(stdscr, TRUE);
-	keypad(stdscr, TRUE);  
-
-	cpu_init();
-	pit_init();
-	pic_init();
-	dma_init();
-	ppi_init();
-	mem_init();
-	fdc_init();
-
-//	f=fopen("../rom/wdbios.rom","r");fread(mem+0xc8000,8192,1,f);fclose(f);
-	f=fopen("../rom/basicc11.f6","r");fread(mem+0xf6000,8192,1,f);fclose(f);
-	f=fopen("../rom/basicc11.f8","r");fread(mem+0xf8000,8192,1,f);fclose(f);
-	f=fopen("../rom/basicc11.fa","r");fread(mem+0xfa000,8192,1,f);fclose(f);
-	f=fopen("../rom/basicc11.fc","r");fread(mem+0xfc000,8192,1,f);fclose(f);
-	f=fopen("../rom/pc081682.bin","r");fread(mem+0xfe000,8192,1,f);fclose(f);
+        nodelay(stdscr, TRUE);
+        keypad(stdscr, TRUE);
 	
+
 	mainloop();
 	endwin();
 	return 0;
