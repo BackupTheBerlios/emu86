@@ -23,6 +23,7 @@
 #include "common.h"
 #include "timer.h" 
 
+void fdc_init();
 void fdc_timer_handler();
 
 #endif /* __765_H */

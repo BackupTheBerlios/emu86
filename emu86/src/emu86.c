@@ -22,11 +22,14 @@
 #include "common.h"
 
 #include "cpu/cpu.h"
+#include "cpu/cpu_exec.h"
 #include "mem/mem.h"
 #include "hardware/PIT/8254.h"
 #include "hardware/PIC/8259A.h"
 #include "hardware/PPI/8255A.h"
 #include "hardware/FDC/765.h"
+#include "hardware/MDA/6845.h"
+#include "hardware/DMA/8237.h"
 
 int load_rom(char *filename, int offset, int size, char *md5)
 {
@@ -39,7 +42,7 @@ int load_rom(char *filename, int offset, int size, char *md5)
 	
 	if (!f)
 	{
-		EMU_FATAL(("fopen(%s, \"r\") failed: %s", filename, strerror(errno)));
+		EMU_FATAL("fopen(%s, \"r\") failed: %s", filename, strerror(errno));
 	}
 	
 	/* TODO: check md5 hash */
@@ -66,7 +69,7 @@ void mainloop()
 		if (o == 1000) {
 			got = getch();
 			if (got != ERR) {
-				DEBUG("got: %x\n", got);
+				EMU_DEBUG("got: %x", got);
 				if (got == 'a')
 				{
 					ppi_write_port_a(0x3b);

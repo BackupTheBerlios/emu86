@@ -67,8 +67,6 @@ char buf[32000];
 
 void mda_textmode_out()
 {
-	bit32u now = 0;
-	int i = 0;
 	bit8u x,y;
 	char *ptr;
 /*tr = mem + 0xb000 * 16;

@@ -17,6 +17,7 @@
 #include <stdarg.h>
 
 #include "8259A.h"
+#include "../cpu/cpu_iflow.h"
 
 typedef struct _pic {
 	bit8u p20;

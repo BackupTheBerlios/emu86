@@ -14,6 +14,8 @@
 
 #include "8254.h"
 
+#include "../PIC/8259A.h"
+
 typedef struct _pit_timer {
 	bit16u count;
 	bit16u count_start;
