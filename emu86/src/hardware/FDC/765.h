@@ -12,4 +12,12 @@
  * General Public License for more details.
  */
 
+#ifndef __765_H
+#define __765_H
+
 #include "common.h"
+#include "timer.h"
+
+void fdc_timer_handler();
+
+#endif /* __765_H */

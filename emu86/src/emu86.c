@@ -10,7 +10,7 @@
 #include "hardware/PIT/8254.h"
 #include "hardware/PIC/8259A.h"
 #include "hardware/PPI/8255A.h"
-
+#include "hardware/FDC/765.h"
 
 void mainloop()
 {
@@ -37,7 +37,8 @@ void mainloop()
 			}
 		 	o= 0;
 		}
-                z++;                                                            
+                z++;
+		process_timers(50);
                 cpu_exec_in();                                                  
                 pit_tick();                                                     
                 if (z  == 100000)                                               
@@ -68,6 +69,7 @@ int main()
 	dma_init();
 	ppi_init();
 	mem_init();
+	fdc_init();
 
 //	f=fopen("../rom/wdbios.rom","r");fread(mem+0xc8000,8192,1,f);fclose(f);
 	f=fopen("../rom/basicc11.f6","r");fread(mem+0xf6000,8192,1,f);fclose(f);

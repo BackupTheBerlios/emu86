@@ -80,7 +80,7 @@ AM_CFLAGS = -I$(top_srcdir)/src
 
 noinst_LIBRARIES = libhardware.a
 libhardware_a_SOURCES = PIT/8254.c DMA/8237.c PIC/8259A.c MDA/6845.c \
-			PPI/8255A.c
+			PPI/8255A.c FDC/765.c
 
 subdir = src/hardware
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -91,7 +91,7 @@ LIBRARIES = $(noinst_LIBRARIES)
 libhardware_a_AR = $(AR) cru
 libhardware_a_LIBADD =
 am_libhardware_a_OBJECTS = 8254.$(OBJEXT) 8237.$(OBJEXT) 8259A.$(OBJEXT) \
-	6845.$(OBJEXT) 8255A.$(OBJEXT)
+	6845.$(OBJEXT) 8255A.$(OBJEXT) 765.$(OBJEXT)
 libhardware_a_OBJECTS = $(am_libhardware_a_OBJECTS)
 
 DEFS = @DEFS@
@@ -101,9 +101,9 @@ LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/6845.Po ./$(DEPDIR)/8237.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/8254.Po ./$(DEPDIR)/8255A.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/8259A.Po
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/6845.Po ./$(DEPDIR)/765.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/8237.Po ./$(DEPDIR)/8254.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/8255A.Po ./$(DEPDIR)/8259A.Po
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
@@ -132,6 +132,7 @@ clean-noinstLIBRARIES:
 8259A.$(OBJEXT): PIC/8259A.c
 6845.$(OBJEXT): MDA/6845.c
 8255A.$(OBJEXT): PPI/8255A.c
+765.$(OBJEXT): FDC/765.c
 libhardware.a: $(libhardware_a_OBJECTS) $(libhardware_a_DEPENDENCIES) 
 	-rm -f libhardware.a
 	$(libhardware_a_AR) libhardware.a $(libhardware_a_OBJECTS) $(libhardware_a_LIBADD)
@@ -144,6 +145,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/6845.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/765.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/8237.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/8254.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/8255A.Po@am__quote@
@@ -223,6 +225,18 @@ distclean-depend:
 @AMDEP_TRUE@	depfile='$(DEPDIR)/8255A.Po' tmpdepfile='$(DEPDIR)/8255A.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o 8255A.obj `cygpath -w PPI/8255A.c`
+
+765.o: FDC/765.c
+@AMDEP_TRUE@	source='FDC/765.c' object='765.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/765.Po' tmpdepfile='$(DEPDIR)/765.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o 765.o `test -f 'FDC/765.c' || echo '$(srcdir)/'`FDC/765.c
+
+765.obj: FDC/765.c
+@AMDEP_TRUE@	source='FDC/765.c' object='765.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/765.Po' tmpdepfile='$(DEPDIR)/765.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o 765.obj `cygpath -w FDC/765.c`
 CCDEPMODE = @CCDEPMODE@
 uninstall-info-am:
 

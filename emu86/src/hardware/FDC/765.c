@@ -12,9 +12,6 @@
  * General Public License for more details.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "765.h"
 
 typedef struct _fdc {
@@ -25,6 +22,8 @@ FDC fdc;
 
 void fdc_init()
 {
+	timer_init(TIMER_FDC, *fdc_timer_handler, 50000);
+	timer_start(TIMER_FDC);
 }
 
 void fdc_write_dor(bit8u val)
@@ -36,6 +35,11 @@ void fdc_write_dor(bit8u val)
 void fdc_read_dor(bit8u *val)
 {
 	*val = fdc.DOR;
-	DEBUG("[PPI] read DOR (%02x)\n", *val);
+	DEBUG("[FDC] read DOR (%02x)\n", *val);
 }
 
+void fdc_timer_handler()
+{
+	DEBUG("[FDC] timer handler..\n");
+	timer_reset(TIMER_FDC);
+}
